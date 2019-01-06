@@ -1,8 +1,0 @@
-mybatis:
-  type-aliases-package: com.so.sbmytatis.entitys
-spring:
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/movie?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
-    username: root
-    password: 123456
