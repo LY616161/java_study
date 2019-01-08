@@ -4,9 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/sb_poi/demo.iml" filepath="$PROJECT_DIR$/sb_poi/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/my_github.iml" filepath="$PROJECT_DIR$/.idea/my_github.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-elasticsearch/sb-elasticsearch.iml" filepath="$PROJECT_DIR$/sb-elasticsearch/sb-elasticsearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/sb-mybatis/sb-mybatis.iml" filepath="$PROJECT_DIR$/sb-mybatis/sb-mybatis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-mybatis-multi/sb-mybatis-multi.iml" filepath="$PROJECT_DIR$/sb-mybatis-multi/sb-mybatis-multi.iml" />
       <module fileurl="file://$PROJECT_DIR$/sb-mybatis/sb-mytatis.iml" filepath="$PROJECT_DIR$/sb-mybatis/sb-mytatis.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sb-mybatis-multi/sb-mytbatis-multi.iml" filepath="$PROJECT_DIR$/sb-mybatis-multi/sb-mytbatis-multi.iml" />
     </modules>
   </component>
 </project>

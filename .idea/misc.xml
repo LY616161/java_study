@@ -7,6 +7,8 @@
         <option value="$PROJECT_DIR$/sb-mytatis/pom.xml" />
         <option value="$PROJECT_DIR$/sb-mytatis-multi/pom.xml" />
         <option value="$PROJECT_DIR$/sb-mybatis/pom.xml" />
+        <option value="$PROJECT_DIR$/sb-mybatis-multi/pom.xml" />
+        <option value="$PROJECT_DIR$/sb-elasticsearch/pom.xml" />
       </list>
     </option>
   </component>
