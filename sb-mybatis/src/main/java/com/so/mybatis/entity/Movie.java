@@ -1,9 +1,12 @@
 package com.so.mybatis.entity;
 
+import com.so.mybatis.commom.Enum.MovieType;
+
 public class Movie {
     private long id = -1;
     private String movieName;
     private int boxoffice = -1;
+    private MovieType type = MovieType.NA;
 
     public long getId() {
         return id;
@@ -27,5 +30,13 @@ public class Movie {
 
     public void setBoxoffice(int boxoffice) {
         this.boxoffice = boxoffice;
+    }
+
+    public MovieType getType() {
+        return type;
+    }
+
+    public void setType(MovieType type) {
+        this.type = type;
     }
 }
