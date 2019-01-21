@@ -7,7 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="demo" />
+        <module name="sb-dreamer" />
         <module name="sb-elasticsearch" />
+        <module name="sb-eureka" />
+        <module name="sb-movie" />
         <module name="sb-mybatis" />
         <module name="sb-mybatis-multi" />
         <module name="sb-mytatis" />
@@ -16,7 +19,11 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="demo" target="1.8" />
+      <module name="sb-book" target="1.8" />
+      <module name="sb-dreamer" target="1.8" />
       <module name="sb-elasticsearch" target="1.8" />
+      <module name="sb-eureka" target="1.8" />
+      <module name="sb-movie" target="1.8" />
       <module name="sb-mybatis" target="1.8" />
       <module name="sb-mybatis-multi" target="1.8" />
       <module name="sb-mytatis" target="1.8" />

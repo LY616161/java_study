@@ -9,6 +9,9 @@
         <option value="$PROJECT_DIR$/sb-mybatis/pom.xml" />
         <option value="$PROJECT_DIR$/sb-mybatis-multi/pom.xml" />
         <option value="$PROJECT_DIR$/sb-elasticsearch/pom.xml" />
+        <option value="$PROJECT_DIR$/sb-eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/sb-movie/pom.xml" />
+        <option value="$PROJECT_DIR$/sb-dreamer/pom.xml" />
       </list>
     </option>
   </component>
