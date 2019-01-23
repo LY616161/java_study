@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/sb_poi/demo.iml" filepath="$PROJECT_DIR$/sb_poi/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/java_study.iml" filepath="$PROJECT_DIR$/.idea/java_study.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-movie/movie.iml" filepath="$PROJECT_DIR$/sb-movie/movie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-dreamer/sb-dreamer.iml" filepath="$PROJECT_DIR$/sb-dreamer/sb-dreamer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-elasticsearch/sb-elasticsearch.iml" filepath="$PROJECT_DIR$/sb-elasticsearch/sb-elasticsearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-eureka/sb-eureka.iml" filepath="$PROJECT_DIR$/sb-eureka/sb-eureka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-movie/sb-movie.iml" filepath="$PROJECT_DIR$/sb-movie/sb-movie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-mybatis/sb-mybatis.iml" filepath="$PROJECT_DIR$/sb-mybatis/sb-mybatis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-mybatis-multi/sb-mytbatis-multi.iml" filepath="$PROJECT_DIR$/sb-mybatis-multi/sb-mytbatis-multi.iml" />
+    </modules>
+  </component>
+</project>
