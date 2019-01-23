@@ -9,9 +9,15 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.so</groupId>
+<<<<<<< HEAD
 	<artifactId>sb-movie</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sb-movie</name>
+=======
+	<artifactId>movie</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>movie</name>
+>>>>>>> 8611a86e5abdef02d88a1ab4823beec1a1871163
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -37,6 +43,7 @@
 			<artifactId>spring-cloud-starter-eureka</artifactId>
 			<version>1.4.3.RELEASE</version>
 		</dependency>
+<<<<<<< HEAD
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-feign</artifactId>
@@ -47,6 +54,8 @@
 			<artifactId>spring-cloud-starter-hystrix</artifactId>
 			<version>1.4.3.RELEASE</version>
 		</dependency>
+=======
+>>>>>>> 8611a86e5abdef02d88a1ab4823beec1a1871163
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
