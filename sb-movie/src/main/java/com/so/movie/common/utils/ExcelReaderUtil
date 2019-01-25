@@ -1,0 +1,78 @@
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+
+import smartem.eval.service.common.constant.CommonConst;
+
+/**
+ * 读取xlsx文件。
+ *
+ * @author yzy
+ * @version 2018年7月6日
+ */
+
+public class ExcelReaderUtil extends XxlsAbstract {
+    
+    private static final String COLUMN_NAME_REG = "^([A-Z]{1,})";
+    
+    private List<Map<String, String>> valueList = new ArrayList<>();
+    
+    /**
+     * 获取Excel文件内容列表。
+     * 
+     * @return List<Map<列编号, 值>>
+     * @author yzy
+     */
+    public List<Map<String, String>> getDatas(){
+        return valueList;
+    }
+    
+    @Override
+    public void optRows(int curRow, Map<String, String> rowValueMap) throws SQLException {
+
+        Map<String, String> valueMap = new HashMap<>();
+        rowValueMap.forEach((k, v) -> valueMap.put(removeNum(k), v));
+
+        if (!valueMap.isEmpty()) {
+            valueList.add(valueMap);
+        }
+    }
+    
+    /**
+     * xlsx文件读取的日期转换为字符串。
+     * 
+     * @param dateValue excel中存储日期的数字字符串
+     * @return  日期。如：2018-09-01
+     * @author yzy
+     */
+    public static String dateNum2Str(String dateValue) {
+        Date date = HSSFDateUtil.getJavaDate(Double.valueOf(dateValue));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(CommonConst.DATE_FORMAT_RULE);
+        return dateFormat.format(date);
+    }
+    
+    /**
+     * 移除单元格名称中的数字
+     * 
+     * @param str 
+     * @return
+     * @author yzy
+     */
+    private String removeNum(String str) {
+        Pattern pattern = Pattern.compile(COLUMN_NAME_REG);
+        Matcher m = pattern.matcher(str);
+        while(m.find()) {
+            return m.group(1);
+        }
+        
+        return "";
+    }
+}
