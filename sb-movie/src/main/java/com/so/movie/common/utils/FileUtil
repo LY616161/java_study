@@ -1,0 +1,256 @@
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 文件公共处理类
+ *
+ * @version 2018年6月8日
+ */
+public class FileUtil {
+
+    private static Logger logger = LogManager.getLogger(FileUtil.class);
+
+
+    /**
+     * 创建目录
+     *
+     * @param filePath
+     * @throws Exception
+     */
+    public static void createDir(String filePath) throws Exception {
+        logger.info("createDir() begin. filePath:" + filePath);
+        // 路径校验
+        File file = FileUtils.getFile(filePath);
+        if (file.exists() && !file.isDirectory()) {
+            throw new Exception("file has existed and is not a directory");
+        }
+        mkdirs(file);
+        logger.info("createDir() end.");
+    }
+
+    /**
+     * 创建目录
+     *
+     * @param file
+     * @throws Exception
+     */
+    private static void mkdirs(File file) throws Exception {
+        logger.info("mkdirs() begin. file.path:" + file.getAbsolutePath());
+        if (!file.mkdirs()) {
+            throw new Exception("create directory failed");
+        }
+        logger.info("mkdirs() end. ");
+    }
+
+
+    /**
+     * 检测文件路径是否存在。
+     *
+     * @param filePath 文件路径
+     * @return true-存在; false-不存在
+     * @author yzy
+     */
+    public static boolean checkFileExist(String filePath) {
+        File file = FileUtils.getFile(filePath);
+        return file.exists() && file.isFile();
+    }
+
+    /**
+     * 判断文件夹是否存在
+     *
+     * @param dirPath 文件夹路径
+     * @return true-存在; false-不存在
+     * @author yzy
+     */
+    public static boolean checkDirectoryExist(String dirPath) {
+        File file = FileUtils.getFile(dirPath);
+        return file.exists() && file.isDirectory();
+    }
+
+    /**
+     * 删除文件。
+     *
+     * @param filePath
+     * @author yzy
+     */
+    public static void deleteFile(String filePath) {
+        File file = FileUtils.getFile(filePath);
+        if (file.exists() && file.isFile()) {
+            if (!file.delete()) {
+                logger.error("Delete file fail. filePath:" + filePath);
+            }
+        }
+    }
+
+    /**
+     * 截取无扩展名的文件路径。
+     *
+     * @param filePath 文件路径
+     * @return 无
+     * @author yzy
+     */
+    public static String getFilePathNoExtension(String filePath) {
+
+        int index = filePath.lastIndexOf(".");
+        if (index < 0) {
+            return "";
+        }
+
+        return filePath.substring(0, index);
+    }
+
+    /**
+     * 删除一个文件或者目录
+     *
+     * @param targetPath 文件或者目录路径
+     * @IOException 当操作发生异常时抛出
+     */
+    public static void delFile(String targetPath) {
+        File targetFile = FileUtils.getFile(targetPath);
+        FileUtils.deleteQuietly(targetFile);
+    }
+
+    /**
+     * 获取文件扩展名
+     *
+     * @param filePath 文件路径
+     * @return 扩展名
+     */
+    public static String getExtensionName(String filePath) {
+        if (StringUtils.isNotEmpty(filePath)) {
+            int index = filePath.lastIndexOf(".");
+            if (index < 0) {
+                return StringUtils.EMPTY;
+            }
+            return filePath.substring(index + 1);
+        }
+        return StringUtils.EMPTY;
+    }
+
+    /**
+     * 删除文件目录
+     *
+     * @param dir
+     * @return
+     */
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            if (children != null) {
+                for (String aChildren : children) {
+                    boolean success = deleteDir(FileUtils.getFile(dir, aChildren));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
+        return dir.delete();
+    }
+
+    /**
+     * 关闭输入流
+     *
+     * @param in
+     */
+    public static void closeInputStream(InputStream in) {
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                logger.info("Unreleased Resource Error :" + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 关闭输出流
+     *
+     * @param out
+     */
+    public static void closeOutputStream(OutputStream out) {
+        if (out != null) {
+            try {
+                out.close();
+            } catch (IOException e) {
+                logger.info("Unreleased Resource Error :" + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 按文件夹查找同一扩展名的文件
+     */
+    public static List<String> directoryProcess(File file, String end) {
+        List<String> results = new ArrayList<>();
+        File list[] = file.listFiles();
+        if (list != null) {
+            for (int i = 0; i < list.length; i++) {
+                if (list[i].isDirectory()) {
+                    directoryProcess(list[i], end);
+                } else {
+                    if (list[i].getName().endsWith(end)) {
+                        try {
+							results.add(list[i].getCanonicalPath());
+						} catch (IOException e) {
+							logger.error(e.getMessage());
+						}
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * 校验上传文件类型
+     *
+     * @param file 文件
+     * @return 是否文件类型为Excel或Zip
+     * @throws IOException
+     */
+    public static boolean checkContentTypeFromStream(MultipartFile file) throws IOException {
+        String fileType = getExtensionName(file.getOriginalFilename());
+        logger.info("fileType: " + fileType);
+        if ("xlsx".equalsIgnoreCase(fileType) || "xls".equalsIgnoreCase(fileType) || "zip".equalsIgnoreCase(fileType)) {
+            BufferedInputStream is = new BufferedInputStream(file.getInputStream());
+            is.mark(4);
+            int c1 = is.read();
+            int c2 = is.read();
+            int c3 = is.read();
+            int c4 = is.read();
+            is.reset();
+            closeInputStream(is);
+            //如果为Excel或Zip，则通过验证
+            return (c1 == 80 && c2 == 75 && c3 == 3 && c4 == 4) || (c1 == 208 && c2 == 207 && c3 == 17 && c4 == 224);
+        }
+        return false;
+    }
+
+    public static boolean checkExcel(MultipartFile file) throws IOException {
+        String fileType = getExtensionName(file.getOriginalFilename());
+        logger.info("fileType: " + fileType);
+        if ("xlsx".equalsIgnoreCase(fileType) || "xls".equalsIgnoreCase(fileType)) {
+            BufferedInputStream is = new BufferedInputStream(file.getInputStream());
+            is.mark(4);
+            int c1 = is.read();
+            int c2 = is.read();
+            int c3 = is.read();
+            int c4 = is.read();
+            is.reset();
+            closeInputStream(is);
+            //如果为Excel，则通过验证
+            return (c1 == 80 && c2 == 75 && c3 == 3 && c4 == 4);
+        }
+        return false;
+    }
+}
