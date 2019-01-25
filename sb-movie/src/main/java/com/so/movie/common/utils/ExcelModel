@@ -1,0 +1,306 @@
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
+import smartem.eval.service.common.constant.EnumLocaleType;
+import smartem.eval.service.common.util.FileUtil;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * Excel模板类
+ *
+ * @author gjj
+ * @date 2018/8/10
+ */
+public class ExcelModel {
+
+	private static final Logger LOGGER = LogManager.getLogger(ExcelModel.class);
+
+	private static final String FILE_PATH = System.getProperty("user.dir") + File.separator + "config" + File.separator
+			+ "excel" + File.separator;
+
+	/**
+	 * 工作薄对象
+	 */
+	private Workbook wb;
+
+	/**
+	 * 工作表对象
+	 */
+	private Sheet sheet;
+
+	/**
+	 * 标题行号
+	 */
+	private int headerNum;
+
+	/**
+	 * 数据起始行号
+	 */
+	private int dataNum;
+
+	/**
+	 * 构造函数
+	 *
+	 * @param fileName  导入文件，读取第一个工作表
+	 * @param headerNum 标题行号，数据行号=标题行号+1
+	 * @throws IOException
+	 */
+	public ExcelModel(String fileName, int headerNum) throws IOException {
+		this(FileUtils.getFile(fileName), headerNum);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param file      导入文件对象，读取第一个工作表
+	 * @param headerNum 标题行号，数据行号=标题行号+1
+	 * @throws IOException
+	 */
+	public ExcelModel(File file, int headerNum) throws IOException {
+		this(file, headerNum, 0);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param fileName   导入文件
+	 * @param headerNum  标题行号，数据行号=标题行号+1
+	 * @param sheetIndex 工作表编号
+	 * @throws IOException
+	 */
+	public ExcelModel(String fileName, int headerNum, int sheetIndex) throws IOException {
+		this(FileUtils.getFile(fileName), headerNum, sheetIndex);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param file       导入文件对象
+	 * @param headerNum  标题行号，数据行号=标题行号+1
+	 * @param sheetIndex 工作表编号
+	 * @throws IOException
+	 */
+	public ExcelModel(File file, int headerNum, int sheetIndex) throws IOException {
+		this(file.getName(), new FileInputStream(file), headerNum, sheetIndex);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param multipartFile 导入文件对象
+	 * @param headerNum     标题行号，数据行号=标题行号+1
+	 * @param sheetIndex    工作表编号
+	 * @throws IOException
+	 */
+	public ExcelModel(MultipartFile multipartFile, int headerNum, int sheetIndex) throws IOException {
+		this(multipartFile.getOriginalFilename(), multipartFile.getInputStream(), headerNum, sheetIndex);
+	}
+
+	/**
+	 * 构造函数
+	 *
+	 * @param fileName   导入文件对象
+	 * @param headerNum  标题行号，数据行号=标题行号+1
+	 * @param sheetIndex 工作表编号
+	 * @throws IOException
+	 */
+	public ExcelModel(String fileName, InputStream is, int headerNum, int sheetIndex) throws IOException {
+		if (StringUtils.isBlank(fileName)) {
+			throw new RuntimeException("Import file is empty!");
+		} else if ("xls".equalsIgnoreCase(FileUtil.getExtensionName(fileName))) {
+			this.wb = new HSSFWorkbook(is);
+		} else if ("xlsx".equalsIgnoreCase(FileUtil.getExtensionName(fileName))) {
+			this.wb = new XSSFWorkbook(is);
+		} else {
+			LOGGER.error("Invalid import file type!");
+			throw new RuntimeException("Invalid import file type!");
+		}
+		if (this.wb.getNumberOfSheets() < sheetIndex) {
+			LOGGER.error("No sheet in Import file!");
+			throw new RuntimeException("No sheet in Import file!");
+		}
+		this.sheet = this.wb.getSheetAt(sheetIndex);
+		this.headerNum = headerNum;
+		this.dataNum = headerNum + 1;
+	}
+
+	/**
+	 * 获取行对象
+	 *
+	 * @param rownum
+	 * @return
+	 */
+	public Row getRow(int rownum) {
+		return this.sheet.getRow(rownum);
+	}
+
+	/**
+	 * 获取数据行号
+	 *
+	 * @return
+	 */
+	public int getDataRowNum() {
+		return dataNum;
+	}
+
+	/**
+	 * 获取最后一个数据行号
+	 *
+	 * @return
+	 */
+	public int getLastDataRowNum() {
+		return this.sheet.getLastRowNum() + headerNum;
+	}
+
+	/**
+	 * 获取最后一个列号
+	 *
+	 * @return
+	 */
+	public int getLastCellNum() {
+		return this.getRow(headerNum).getLastCellNum();
+	}
+
+	/**
+	 * 合并单元格
+	 * @param firstRow 开始行
+	 * @param lastRow 结束行
+	 * @param firstCol 开始列
+	 * @param lastCol 结束列
+	 */
+	public void addMergedRegion(int firstRow,int lastRow,int firstCol,int lastCol) {
+		sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+	}
+
+	/**
+	 * 添加一行
+	 *
+	 * @return 行对象
+	 */
+	public Row addRow() {
+		Row row = sheet.createRow(dataNum - 1);
+		++dataNum;
+		return row;
+	}
+
+	/**
+	 * 添加一个单元格
+	 *
+	 * @param row    添加的行
+	 * @param column 添加列号
+	 * @param val    添加值
+	 */
+	public void addCell(Row row, int column, Object val) {
+		Cell cell = row.createCell(column);
+		try {
+			if (val == null) {
+				cell.setCellValue("");
+			} else if (val instanceof String) {
+				cell.setCellValue((String) val);
+			} else if (val instanceof Integer) {
+				cell.setCellValue((Integer) val);
+			} else if (val instanceof Long) {
+				cell.setCellValue((Long) val);
+			} else if (val instanceof Double) {
+				cell.setCellValue((Double) val);
+			} else if (val instanceof Float) {
+				cell.setCellValue((Float) val);
+			} else if (val instanceof Date) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				cell.setCellValue(sdf.format(val));
+			} else {
+				cell.setCellValue((String) Class
+						.forName(this.getClass().getName().replaceAll(this.getClass().getSimpleName(),
+								"fieldtype." + val.getClass().getSimpleName() + "Type"))
+						.getMethod("setValue", Object.class).invoke(null, val));
+			}
+		} catch (Exception e) {
+			LOGGER.error("Set cell value error", e);
+		}
+	}
+
+	/**
+	 * 输出到文件
+	 *
+	 * @param name 输出文件名
+	 */
+	public void writeFile(String name) throws IOException {
+		this.write(FileUtils.openOutputStream(FileUtils.getFile(name)));
+	}
+
+	/**
+	 * 输出数据流
+	 *
+	 * @param os 输出数据流
+	 */
+	public void write(OutputStream os) throws IOException {
+		wb.write(os);
+		FileUtil.closeOutputStream(os);
+	}
+
+	/**
+	 * 根据语言返回一个对应的excel模型
+	 * 
+	 * @throws IOException
+	 */
+	public static ExcelModel getExcelModel(EnumLocaleType lang) throws IOException {
+		ExcelModel excelModel = null;
+		if (lang.equals(EnumLocaleType.ZH_CN)) {
+			excelModel = new ExcelModel(FILE_PATH + "evalresult.xlsx", 1);
+		} else if (lang.equals(EnumLocaleType.EN_US)) {
+			excelModel = new ExcelModel(FILE_PATH + "evalresult_en.xlsx", 1);
+		}
+		return excelModel;
+	}
+
+	/**
+	 * 得到不同語言下相符的覆蓋評估模型
+	 *
+	 * @throws IOException
+	 */
+	public static ExcelModel getCoverageExcelModel(EnumLocaleType lang) throws IOException {
+		ExcelModel excelModel = null;
+		if (lang.equals(EnumLocaleType.ZH_CN)) {
+			excelModel = new ExcelModel(FILE_PATH + "coverageresult.xlsx", 1);
+		} else if (lang.equals(EnumLocaleType.EN_US)) {
+			excelModel = new ExcelModel(FILE_PATH + "coverageresult_en.xlsx", 1);
+		}
+		return excelModel;
+	}
+
+	public static ExcelModel getExportInfoModel(EnumLocaleType lang) throws IOException {
+		ExcelModel excelModel = null;
+		if (lang.equals(EnumLocaleType.ZH_CN)) {
+			excelModel = new ExcelModel(FILE_PATH + "taskinfo.xlsx", 1);
+		} else if (lang.equals(EnumLocaleType.EN_US)) {
+			excelModel = new ExcelModel(FILE_PATH + "taskinfo.xlsx", 1);
+		}
+		return excelModel;
+	}
+
+	public static ExcelModel getErrorInfoModel(EnumLocaleType lang) throws IOException {
+        ExcelModel excelModel = null;
+        if (lang.equals(EnumLocaleType.ZH_CN)) {
+            excelModel = new ExcelModel(FILE_PATH + "importerror.xlsx", 1);
+        } else if (lang.equals(EnumLocaleType.EN_US)) {
+            excelModel = new ExcelModel(FILE_PATH + "importerror.xlsx", 1);
+        }
+        return excelModel;
+    }
+}
