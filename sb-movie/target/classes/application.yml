@@ -14,11 +14,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-<<<<<<< HEAD
 feign:
   hystrix:
     enabled: true
-=======
->>>>>>> 8611a86e5abdef02d88a1ab4823beec1a1871163
   instance:
     prefer-ip-address: true

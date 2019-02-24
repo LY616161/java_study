@@ -25,7 +25,7 @@
       <module name="sb-movie" target="1.8" />
       <module name="sb-mybatis" target="1.8" />
       <module name="sb-mytbatis-multi" target="1.8" />
-      <module name="sb-turbine" target="1.5" />
+      <module name="sb-turbine" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

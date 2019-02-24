@@ -1,9 +1,14 @@
 package com.so.movie.entity;
 
-public class Movie {
+import com.so.movie.common.entity.BaseEntity;
+
+import java.sql.Date;
+
+public class Movie extends BaseEntity {
     private int id;
-    private String name;
-    private int director_id;
+    private String name = "";
+    private int directorId = -1;
+    private Date releaseDate;
 
     public int getId() {
         return id;
@@ -21,11 +26,19 @@ public class Movie {
         this.name = name;
     }
 
-    public int getDirector_id() {
-        return director_id;
+    public int getDirectorId() {
+        return directorId;
     }
 
-    public void setDirector_id(int director_id) {
-        this.director_id = director_id;
+    public void setDirectorId(int directorId) {
+        this.directorId = directorId;
+    }
+
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 }

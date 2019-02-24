@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/sb-movie/sb-movie.iml" filepath="$PROJECT_DIR$/sb-movie/sb-movie.iml" />
       <module fileurl="file://$PROJECT_DIR$/sb-mybatis/sb-mybatis.iml" filepath="$PROJECT_DIR$/sb-mybatis/sb-mybatis.iml" />
       <module fileurl="file://$PROJECT_DIR$/sb-mybatis-multi/sb-mytbatis-multi.iml" filepath="$PROJECT_DIR$/sb-mybatis-multi/sb-mytbatis-multi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sb-turbine/sb-turbine.iml" filepath="$PROJECT_DIR$/sb-turbine/sb-turbine.iml" />
     </modules>
   </component>
 </project>

@@ -1,6 +1,8 @@
 package com.so.movie.entity;
 
-public class Dreamer {
+import com.so.movie.common.entity.BaseEntity;
+
+public class Dreamer extends BaseEntity{
     int id;
     String name;
 
