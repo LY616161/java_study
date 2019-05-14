@@ -1,0 +1,102 @@
+package smartem.sdh.service.common.aop;
+
+import com.alibaba.fastjson.JSONException;
+
+import smartem.sdh.service.common.BaseController;
+import smartem.sdh.service.common.ResponseModel;
+import smartem.sdh.service.common.constant.ErrorCodeConst;
+import smartem.sdh.service.common.exception.AuthorizationException;
+import smartem.sdh.service.common.exception.ZipFileException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartException;
+
+/**
+ * 异常处理器
+ *
+ * @author gjj
+ * @date 2018/9/26
+ */
+@RestControllerAdvice
+@SuppressWarnings("rawtypes")
+public class CommonExceptionHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger(CommonExceptionHandler.class);
+
+    @Autowired
+    private BaseController baseController;
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        LOGGER.error("参数不合法", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.REQUEST_PARAM_ILLEGAL), "参数不合法");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception) {
+        LOGGER.error("参数不合法", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.REQUEST_PARAM_ILLEGAL), "参数不合法");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity handleCommonException(Exception exception) {
+        LOGGER.error("Exception: ", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.INTERNAL_SERVER_ERROR), "服务器内部错误");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity handleAuthorizationException(AuthorizationException exception) {
+        LOGGER.error("用户角色越权", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.AUTH_NOT_PERMISSION), "用户角色越权");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity handleFileSizeLimitException(MultipartException exception) {
+        LOGGER.error("文件上传大小超过限制", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.FILE_UPLOAD_SIZE_EXCEEDS_LIMIT), "文件上传大小超过限制");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(ZipFileException.class)
+    public ResponseEntity handleZipFileException(ZipFileException exception) {
+        LOGGER.error("解压文件失败", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.UNPACKING_THE_FILE_FAILED), "解压文件失败");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(JSONException.class)
+    public ResponseEntity handleJSONException(JSONException exception) {
+        LOGGER.error("参数转换异常", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.ABNORMAL_PARAMETER_CONVERSION), "参数转换异常");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity handleHttpClientErrorException(HttpClientErrorException exception) {
+        LOGGER.error("请求异常", exception);
+        ResponseModel responseModel = ResponseModel.error(String.valueOf(ErrorCodeConst.REQUEST_EXCEPTION), "请求异常");
+        baseController.fillResponseModelMsg(responseModel);
+        return new ResponseEntity<>(responseModel, HttpStatus.UNAUTHORIZED);
+    }
+
+}
