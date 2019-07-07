@@ -1,0 +1,66 @@
+
+import java.util.List;
+
+/**
+ * Dijkstra算法
+ * 
+ * @ClassName: DijkstraAlgo
+ * @Description: TODO
+ * @author mWX588880
+ * @date 2019年2月13日
+ */
+public class DijkstraAlgo {
+    private static final int MAX_NUM = Integer.MAX_VALUE;
+
+    /**
+     * Dijkstra算法（超大汇聚节点使用）
+     * 
+     * @param n
+     *            点总数
+     * @param v
+     *            起点位置
+     * @param dist
+     *            起点到其它点最小距离
+     * @param prev
+     *            最短路径的上一个节点
+     * @param c
+     *            邻接矩阵
+     * @param e
+     *            汇聚节点集合
+     */
+    public static void dijkstra( int n, int v, int[] dist, int[] prev, int[][] c, List<Integer> e ) {
+        boolean[] s = new boolean[n];
+        for ( int i = 0; i < n; i++ ) {
+            dist[i] = c[v][i];
+            s[i] = false;
+            if ( dist[i] == MAX_NUM ) {
+                prev[i] = 0;
+            } else {
+                prev[i] = v;
+            }
+        }
+
+        dist[v] = 0;
+        s[v] = true;
+        for ( int i = 0; i < n - 1; i++ ) {
+            int temp = MAX_NUM;
+            int u = v;
+            for ( int j = 0; j < n; j++ ) {
+                if ( (!s[j]) && (dist[j] < temp) && !e.contains( j ) ) {
+                    u = j;
+                    temp = dist[j];
+                }
+            }
+            s[u] = true;
+            for ( int j = 0; j < n; j++ ) {
+                if ( (!s[j]) && (c[u][j] < MAX_NUM) && !e.contains( j ) ) {
+                    int newDist = dist[u] + c[u][j];
+                    if ( newDist < dist[j] ) {
+                        dist[j] = newDist;
+                        prev[j] = u;
+                    }
+                }
+            }
+        }
+    }
+}

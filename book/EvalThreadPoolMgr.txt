@@ -1,0 +1,73 @@
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 数据准备线程池管理。
+ *
+ * @author yzy
+ * @version 2018年5月25日
+ */
+public class EvalThreadPoolMgr {
+    
+    /**
+     * 保留2个核心线程
+     */
+    private static final int corePoolSize = 2;
+    
+    /**
+     * 最大支持50个线程
+     */
+    private static final int maximumPoolSize = 20;
+    
+    /**
+     * 空闲线程存活时间(分钟)
+     */
+    private static final int keepAliveTime = 5;
+
+    /**
+     * 用于执行任务的线程池
+     */
+    private ThreadPoolExecutor pool;
+    
+    /**
+     * 构造方法设值为私有
+     */
+    private EvalThreadPoolMgr() {
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();   
+        pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MINUTES, queue);   
+    }
+    
+    /**
+     * 获取单例对象。
+     * 
+     * @return 单例对象
+     * @author yzy
+     */
+    public static EvalThreadPoolMgr instance() {
+        return DataPreThreadPoolMgrBuilder.instance;
+    }
+    
+    /**
+     * 添加任务到线程池并执行。只有判断当前没有规划任务时才能添加新任务。
+     * 
+     * @param task 任务对象
+     * @author yzy
+     */
+    public synchronized boolean executeTask(EvalTaskCommon task) {
+        pool.execute(task); 
+        return true;
+    }
+
+    /**
+     * 单例构建类
+     *
+     * @author yzy
+     * @version 2018年5月25日
+     */
+    private static class DataPreThreadPoolMgrBuilder{
+        private static EvalThreadPoolMgr instance = new EvalThreadPoolMgr();
+    }
+}

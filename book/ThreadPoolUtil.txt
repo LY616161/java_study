@@ -1,0 +1,34 @@
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ThreadPoolUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ThreadPoolUtil.class);
+	
+	private static ThreadPoolExecutor loader = new ThreadPoolExecutor(2, 8, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), 
+		new ThreadFactory() {
+			int tCount = 0;
+			@Override
+			public Thread newThread(Runnable r) {
+				return new Thread(r, "Networkrestore-" + (tCount++));
+			}
+		}
+	);
+	
+	public static void execute(Runnable task) {
+		try {
+			loader.execute(task);
+		}
+		catch(Exception ex) {
+			logger.error("[ThreadPoolUtil][execute][Executing task failed]", ex);
+			throw ex;
+		}
+	}
+	
+}
